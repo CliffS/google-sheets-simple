@@ -24,7 +24,7 @@
   "author": "Cliff Stanford <cliff@may.be>",
   "license": "Unlicense",
   "dependencies": {
-    "googleapis": "^47.0.0"
+    "googleapis": "^48.0.0"
   },
   "devDependencies": {
     "coffeelint": "^2.1.0",
