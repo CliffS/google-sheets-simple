@@ -89,7 +89,7 @@ class Sheet
         valueRenderOption: 'UNFORMATTED_VALUE'
       , (err, response) ->
         return reject err if err
-        resolve response
+        resolve response.data.values
 
   append: (where, what, how = 'ROWS') ->
     where = @ranges.get where if where.indexOf('!') is -1
