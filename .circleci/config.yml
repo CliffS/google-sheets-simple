@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  coffee:
+    working_directory: ~
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout:
+          path:
+            ~
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run Coffeelint
+          command: npm run lint
+
+workflows:
+  version: 2
+  run_all:
+    jobs:
+      - coffee
