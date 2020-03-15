@@ -108,3 +108,7 @@ dist
 
 # Javascript
 lib/
+
+# Secrets
+service-account.json
+test.coffee
