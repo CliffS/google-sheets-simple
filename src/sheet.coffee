@@ -3,6 +3,8 @@ Compute = Google.compute 'v1'
 util = require 'util'
 fs = require 'fs'
 
+Range = require './range'
+
 Log = (items...) ->
   items = (
     for item in items
@@ -20,14 +22,8 @@ class Sheet
   ranges: new Map
   tabs:   new Map
 
-  range2A1: (range) ->
-    A = 'A'.charCodeAt 0
-    A1 = "#{String.fromCharCode A + range.startColumnIndex}\
-          #{range.startRowIndex + 1}:\
-          #{String.fromCharCode A + range.endColumnIndex - 1}\
-          #{range.endRowIndex}"
-    sheet = @tabs.get range.sheetId ? 0
-    sheet + '!' + A1
+  initialize: ->
+    initialise()
 
   initialise: ->
     auth = new Google.auth.GoogleAuth
@@ -47,16 +43,15 @@ class Sheet
     .then (result) =>
       spreadsheet = result.data
       @tabs.set sheet.properties.sheetId, sheet.properties.title for sheet in spreadsheet.sheets
-      @ranges.set range.name, @range2A1 range.range for range in spreadsheet.namedRanges
+      # pass the tabs to the static Range
+      Range.sheetMap @tabs
+      @ranges.set range.name, new Range range.range for range in spreadsheet.namedRanges
       spreadsheet
 
   save: (where, what, how = 'ROWS') ->      # or 'COLUMNS'
-    where = @ranges.get where if where.indexOf('!') is -1
-    [..., start, end] = where.match /(\d+):[A-Z]+(\d+)$/
-    start = parseInt start
-    end = parseInt end
-    clearfrom = what.length + start
-    clear = if clearfrom <= end then where.replace /\d+(?=:)/, clearfrom
+    range = if where.indexOf('!') is -1 then @ranges.get where else new Range where
+    where = range.range
+    blank = range.getBlankRanges what, how
     Promise.all [
       @sheets.spreadsheets.values.update
         auth: @auth
@@ -67,45 +62,49 @@ class Sheet
           majorDimension: how
           values: what
     ,
-      Promise.resolve()
-      .then =>
-        if clear?
-          @sheets.spreadsheets.values.clear
-            auth: @auth
-            spreadsheetId: @id
-            range: clear
+      @sheets.spreadsheets.values.batchClear
+        auth: @auth
+        spreadsheetId: @id
+        ranges: (block.range for block in blank)
     ]
-    .then =>
-      @
+    .then (responses) =>
+      responses[0].data
 
   get: (where, how = 'ROWS') ->
-    where = @ranges.get where if where.indexOf('!') is -1
-    new Promise (resolve, reject) =>
-      @sheets.spreadsheets.values.get
-        auth: @auth
-        spreadsheetId: @id
-        range: where
-        majorDimension: how
-        valueRenderOption: 'UNFORMATTED_VALUE'
-      , (err, response) ->
-        return reject err if err
-        resolve response.data.values
+    where = @ranges.get(where).range if where.indexOf('!') is -1
+    @sheets.spreadsheets.values.get
+      auth: @auth
+      spreadsheetId: @id
+      range: where
+      majorDimension: how
+      valueRenderOption: 'UNFORMATTED_VALUE'
+    .then (response) =>
+      response.data.values
+
+  clear: (where) ->
+    where = @ranges.get(where).range if where.indexOf('!') is -1
+    @sheets.spreadsheets.values.clear
+      auth: @auth
+      spreadsheetId: @id
+      range: where
+    .then (response) =>
+      if response.data.error then throw response.data.error
+      response.data
+
 
   append: (where, what, how = 'ROWS') ->
-    where = @ranges.get where if where.indexOf('!') is -1
-    new Promise (resolve, reject) =>
-      @sheets.spreadsheets.values.append
-        auth: @auth
-        spreadsheetId: @id
-        range: where
-        valueInputOption: 'USER_ENTERED'
-        insertDataOption: 'INSERT_ROWS'
-        resource:
-          majorDimension: how
-          values: what
-      , (err, response) ->
-        return reject err if err
-        resolve response
+    where = @ranges.get(where).range if where.indexOf('!') is -1
+    @sheets.spreadsheets.values.append
+      auth: @auth
+      spreadsheetId: @id
+      range: where
+      valueInputOption: 'USER_ENTERED'
+      insertDataOption: 'INSERT_ROWS'
+      resource:
+        majorDimension: how
+        values: what
+    .then =>
+      @
 
 
 
