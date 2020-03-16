@@ -62,10 +62,13 @@ class Sheet
           majorDimension: how
           values: what
     ,
-      @sheets.spreadsheets.values.batchClear
-        auth: @auth
-        spreadsheetId: @id
-        ranges: (block.range for block in blank)
+      Promise.resolve()
+      .then =>
+        if blank?
+          @sheets.spreadsheets.values.batchClear
+            auth: @auth
+            spreadsheetId: @id
+            ranges: (block.range for block in blank)
     ]
     .then (responses) =>
       responses[0].data

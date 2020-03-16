@@ -11,40 +11,40 @@ class Range extends Property
         matches = range.match /^([^!]+)!([A-Z]+)(\d+):([A-Z]+)(\d+)$/
         throw new Error "Invalid range: #{range}" unless matches?
         [sheet, startCol, startRow, endCol, endRow] = matches[1..]
-        @index =
+        @gridRange =
           startRowIndex:      parseInt startRow - 1
           endRowIndex:        parseInt endRow
           startColumnIndex:   Range.letters2column startCol
           endColumnIndex:     Range.letters2column(endCol) + 1
         if Range.names?
           id = Range.names.get sheet
-          @index.sheetId = id if id?
+          @gridRange.sheetId = id if id?
         @sheet = sheet
       when 'object'
         if range instanceof Range
           args = [arguments...]
           [startRow, startColumn, columns] = args[1..]
           # clone the object
-          @[k] = v for own k, v of range when k isnt 'index'
-          @index = Object.assign {}, range.index
-          @index.startRowIndex = startRow if startRow?
-          @index.startColumnIndex = startColumn if startColumn?
-          @index.endColumnIndex = startColumn + columns if columns
-        else # it's just an index
-          @index = range
+          @[k] = v for own k, v of range when k isnt 'gridRange'
+          @gridRange = Object.assign {}, range.gridRange
+          @gridRange.startRowIndex = startRow if startRow?
+          @gridRange.startColumnIndex = startColumn if startColumn?
+          @gridRange.endColumnIndex = startColumn + columns if columns
+        else # it's just a gridRange
+          @gridRange = range
           if Range.sheets?
             @sheet = Range.sheets.get range.sheetId ? 0
           @sheet ?= 'Sheet1'
-    @columns = @index.endColumnIndex - @index.startColumnIndex
-    @rows    = @index.endRowIndex    - @index.startRowIndex
+    @columns = @gridRange.endColumnIndex - @gridRange.startColumnIndex
+    @rows    = @gridRange.endRowIndex    - @gridRange.startRowIndex
 
   @property 'range',
     enumerable: true
     get: ->
-      startCol = Range.column2letters @index.startColumnIndex
-      endCol   = Range.column2letters @index.endColumnIndex - 1
-      startRow = @index.startRowIndex + 1
-      endRow   = @index.endRowIndex
+      startCol = Range.column2letters @gridRange.startColumnIndex
+      endCol   = Range.column2letters @gridRange.endColumnIndex - 1
+      startRow = @gridRange.startRowIndex + 1
+      endRow   = @gridRange.endRowIndex
       "#{@sheet}!#{startCol}#{startRow}:#{endCol}#{endRow}"
 
   getBlankRanges: (data, how) ->
@@ -55,18 +55,18 @@ class Range extends Property
         if cols is @columns and rows.every (len) => len is rows[0]
           # then we have a rectangle
           rows = rows[0]
-          rowStart = @index.startRowIndex + rows
-          if rowStart is @index.endRowIndex
+          rowStart = @gridRange.startRowIndex + rows
+          if rowStart is @gridRange.endRowIndex
             null
           else
-            [ new Range @, @index.startRowIndex + rows ]
+            [ new Range @, @gridRange.startRowIndex + rows ]
         else (
           for col in [0 ... cols]
-            len = @index.startRowIndex + rows[col]
-            new Range @, len, @index.startColumnIndex + col, 1
+            len = @gridRange.startRowIndex + rows[col]
+            new Range @, len, @gridRange.startColumnIndex + col, 1
         )
       when 'ROWS'
-        [ new Range @, @index.startRowIndex + data.length ]
+        [ new Range @, @gridRange.startRowIndex + data.length ]
       else
         throw new Error "Must pass either 'COLUMNS' or 'ROWS'"
 
