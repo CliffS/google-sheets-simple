@@ -2,6 +2,7 @@
 [service]: https://www.npmjs.com/package/googleapis#service-to-service-authentication
 [range]: https://support.google.com/docs/answer/63175?co=GENIE.Platform%3DDesktop&hl=en
 [github]: https://github.com/CliffS/google-sheets-simple/issues
+[API]: https://developers.google.com/sheets/api/reference/rest
 
 # google-sheets-simple
 
@@ -15,6 +16,9 @@ be used in earnest yet.  The syntax may change before version v1.0.0.
 It is a simplified interface to the [Google APIs Node.js Client][googleapis]
 and currently only uses the [Service to Service Authentication][service]
 method.
+
+The full API can be found [here][API].  This library currently on supports
+the basic essentials.
 
 ## Usage
 
