@@ -49,6 +49,8 @@ class Sheet
       spreadsheet
 
   save: (where, what, how = 'ROWS') ->      # or 'COLUMNS'
+    unless how in ['ROWS', 'COLUMNS']
+      throw new Error "'ROWS' or 'COLUMNS' are the only possible values"
     range = if where.indexOf('!') is -1 then @ranges.get where else new Range where
     where = range.range
     blank = range.getBlankRanges what, how
@@ -74,6 +76,8 @@ class Sheet
       responses[0].data
 
   get: (where, how = 'ROWS') ->
+    unless how in ['ROWS', 'COLUMNS']
+      throw new Error "'ROWS' or 'COLUMNS' are the only possible values"
     where = @ranges.get(where).range if where.indexOf('!') is -1
     @sheets.spreadsheets.values.get
       auth: @auth
@@ -96,6 +100,8 @@ class Sheet
 
 
   append: (where, what, how = 'ROWS') ->
+    unless how in ['ROWS', 'COLUMNS']
+      throw new Error "'ROWS' or 'COLUMNS' are the only possible values"
     where = @ranges.get(where).range if where.indexOf('!') is -1
     @sheets.spreadsheets.values.append
       auth: @auth
@@ -106,8 +112,10 @@ class Sheet
       resource:
         majorDimension: how
         values: what
-    .then =>
-      @
+    .then (response) =>
+      if response.data.error then throw response.data.error
+      response.data
+
 
 
 

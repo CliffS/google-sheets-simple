@@ -1,6 +1,7 @@
 [googleapis]: https://www.npmjs.com/package/googleapis
 [service]: https://www.npmjs.com/package/googleapis#service-to-service-authentication
 [range]: https://support.google.com/docs/answer/63175?co=GENIE.Platform%3DDesktop&hl=en
+[github]: https://github.com/CliffS/google-sheets-simple/issues
 
 # google-sheets-simple
 
@@ -9,7 +10,7 @@ A simple way to access Google Sheets with named and unnamed ranges
 ## Please note
 
 This is an early version, an `alpha` version really.  It should not
-be used in earnest yet.
+be used in earnest yet.  The syntax may change before version v1.0.0.
 
 It is a simplified interface to the [Google APIs Node.js Client][googleapis]
 and currently only uses the [Service to Service Authentication][service]
@@ -23,13 +24,15 @@ equally will work with a range described by `Sheet1!A1:D15`.  You
 can get all the cells in the range or set some of the cells, clearing
 out the rest of the range.
 
+All methods return promises.
+
 ## Installation
 
 ```
 npm install google-sheets-simple
 ```
 
-## example
+## Example
 
 ```javascript
 // This assumes you have set the environment variable
@@ -50,3 +53,98 @@ sheet.initialise()
   // array contains a two-dimensional array of the cell values
   });
 ```
+
+## Constructor
+
+This is simply called with the id of the spreadsheet.  The id can
+be obtained from the URL in a browser.  It is the part between `/d/` and
+`/edit`.
+
+This library assumes that you have set up `GOOGLE_APPLICATION_CREDENTIALS`
+correctly and that the service account has access to the
+spreadsheet. The scope used is `https://www.googleapis.com/auth/spreadsheets`.
+
+```javascript
+const Sheets = require('google-sheets-simple');
+
+const sheet = new Sheets(<sheet_id>);
+```
+
+## Methods
+
+### initialise (or initialize)
+
+This is required before any other method is called.  It sets up the
+authentication and populates spreadsheet information into the class.
+It returns a promise and you should wait for the promise to resolve
+before making any other calls.  The promise resolves with the full
+spreadsheet data from the API.  This can usually be ignored.
+
+```javascript
+await sheet.initialise();
+```
+
+### get
+
+This should be passed a range.  All ranges may be passed either as a
+named range (`Data ⇒ Named ranges`) or in the format `Sheet1!A1:C20`.
+Please note that when using A1 ranges, the sheet name is currently
+required, even if there is only one sheet.  Using named ranges is
+highly recommended.
+
+The second parameter is optional and defaults to `ROWS`.  The alternative
+is `COLUMNS` and describes how the data should be retreived. The data
+returned will be a two-dimensional array.
+
+```javascript
+data = await sheet.get('named_range', 'ROWS');
+```
+
+### save
+
+This should be passed a range, as in `get()` above.  The second
+parameter is the data as a two-dimensional array and the optional
+third defaults to 'ROWS' (see above).
+
+If the data does not fill the range given, the remaining rows will
+be cleared.  If `ROWS` is passed, the cleared space is everything
+from the last row provided to the bottom of the range.  If `COLUMNS`
+is provided, each column is cleared from the bottom of the data in
+that column to the bottom of the range.
+
+The response is the raw response data from the API.
+
+```javascript
+await sheet.save('named_range', dataArray, 'ROWS');
+```
+
+### clear
+
+This should be passed a range, as in `get()` above.  The range
+will be cleared.
+
+The response is the raw response data from the API.
+
+```javascript
+await sheet.clear('Sheet2!A3:J50');
+```
+
+### append
+
+This should be passed a range, a two-dimensional array is in `save()`
+above and a third parameter defaulting to 'ROWS'.  The range should describe
+the top part of a table.
+
+The data passed will be appended to the table, even though the table
+extends below the range.  It is usual with `append()` only to pass
+a single row of data to be appended but please remember that it still
+needs to be a two-dimensional array.
+
+```javascript
+await sheet.append('named_range', [ rowDataArray ]);
+```
+
+# Any issues
+
+Please report any issues or comments at [Github][github] issues. PRs and
+suggestions are very welcome.
