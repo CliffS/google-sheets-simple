@@ -19,7 +19,7 @@ method.
 ## Usage
 
 The design behind this module is that you wish to get or put a
-particular range of cells.  It works best with a [named range] but
+particular range of cells.  It works best with a [named range][range] but
 equally will work with a range described by `Sheet1!A1:D15`.  You
 can get all the cells in the range or set some of the cells, clearing
 out the rest of the range.
