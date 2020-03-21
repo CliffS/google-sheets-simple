@@ -77,9 +77,9 @@ correctly and that the service account has access to the
 spreadsheet. The scope used is `https://www.googleapis.com/auth/spreadsheets`.
 
 ```javascript
-const Sheets = require('google-sheets-simple');
+const { Sheet } = require('google-sheets-simple');
 
-const sheet = new Sheets(<sheet_id>);
+const sheet = new Sheet(<sheet_id>);
 ```
 
 ## Methods
