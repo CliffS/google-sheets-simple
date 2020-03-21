@@ -4,24 +4,27 @@ A = 'A'.charCodeAt 0
 
 class Range extends Property
 
-  constructor: (range) ->
+  constructor: (range, tabs, ranges) ->
     super()
     switch typeof range
       when 'string'
+        if ranges.has range # it's a named range
+          range = ranges.get(range).range
         matches = range.match /^([^!]+)!([A-Z]+)(\d+):([A-Z]+)(\d+)$/
-        throw new Error "Invalid range: #{range}" unless matches?
+        unless matches?
+          named = ranges.get range
+          throw new Error "Invalid range: #{range}" unless named?
         [sheet, startCol, startRow, endCol, endRow] = matches[1..]
         @gridRange =
           startRowIndex:      parseInt startRow - 1
           endRowIndex:        parseInt endRow
           startColumnIndex:   Range.letters2column startCol
           endColumnIndex:     Range.letters2column(endCol) + 1
-        if Range.names?
-          id = Range.names.get sheet
-          @gridRange.sheetId = id if id?
+        id = k for [k, v] from tabs when v is sheet
+        @gridRange.sheetId = id if id?
         @sheet = sheet
       when 'object'
-        if range instanceof Range
+        if range instanceof Range   # should only happen internally
           args = [arguments...]
           [startRow, startColumn, columns] = args[1..]
           # clone the object
@@ -32,11 +35,10 @@ class Range extends Property
           @gridRange.endColumnIndex = startColumn + columns if columns
         else # it's just a gridRange
           @gridRange = range
-          if Range.sheets?
-            @sheet = Range.sheets.get range.sheetId ? 0
-          @sheet ?= 'Sheet1'
+          @sheet = tabs.get range.sheetId ? 0
     @columns = @gridRange.endColumnIndex - @gridRange.startColumnIndex
     @rows    = @gridRange.endRowIndex    - @gridRange.startRowIndex
+    throw new Error "Invalid range: #{range}" if @columns < 1 or @rows < 1
 
   @property 'range',
     enumerable: true
@@ -69,11 +71,6 @@ class Range extends Property
         [ new Range @, @gridRange.startRowIndex + data.length ]
       else
         throw new Error "Must pass either 'COLUMNS' or 'ROWS'"
-
-
-  @sheetMap = (map) ->
-    @sheets = map
-    @names  = new Map [map...].reverse()
 
   @column2letters: (index) ->
     throw new Error "Invalid column: #{index}" unless "#{index}".match /^\d+$/

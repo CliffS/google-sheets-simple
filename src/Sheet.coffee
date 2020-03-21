@@ -3,7 +3,7 @@ Compute = Google.compute 'v1'
 util = require 'util'
 fs = require 'fs'
 
-Range = require './range'
+Range = require './Range'
 
 Log = (items...) ->
   items = (
@@ -21,6 +21,9 @@ class Sheet
 
   ranges: new Map
   tabs:   new Map
+
+  getRange: (range) ->
+    new Range range, @tabs, @ranges
 
   initialize: ->
     initialise()
@@ -43,15 +46,13 @@ class Sheet
     .then (result) =>
       spreadsheet = result.data
       @tabs.set sheet.properties.sheetId, sheet.properties.title for sheet in spreadsheet.sheets
-      # pass the tabs to the static Range
-      Range.sheetMap @tabs
-      @ranges.set range.name, new Range range.range for range in spreadsheet.namedRanges
+      @ranges.set range.name, @getRange range.range for range in spreadsheet.namedRanges
       spreadsheet
 
   save: (where, what, how = 'ROWS') ->      # or 'COLUMNS'
     unless how in ['ROWS', 'COLUMNS']
       throw new Error "'ROWS' or 'COLUMNS' are the only possible values"
-    range = if where.indexOf('!') is -1 then @ranges.get where else new Range where
+    range = if where.indexOf('!') is -1 then @ranges.get where else @getRange where
     where = range.range
     blank = range.getBlankRanges what, how
     Promise.all [
