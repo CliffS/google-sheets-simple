@@ -8,6 +8,14 @@
 
 A simple way to access Google Sheets with named and unnamed ranges
 
+## Breaking changes
+
+Version v0.3.0 onwards use a different syntax for the `require`:
+
+```javascript
+{ Sheet, Range } = require('google-sheets-simple);
+```
+
 ## Please note
 
 This is an early version, an `alpha` version really.  It should not
@@ -42,9 +50,9 @@ npm install google-sheets-simple
 // This assumes you have set the environment variable
 //  GOOGLE_APPLICATION_CREDENTIALS to point at a service account file
 
-const Sheets = require('google-sheets-simple');
+const { Sheet } = require('google-sheets-simple');
 
-const sheet = new Sheets(<sheet_id>);
+const sheet = new Sheet(<sheet_id>);
 sheet.initialise()
 .then(() => {
   const data = <some two-dimensional array>;

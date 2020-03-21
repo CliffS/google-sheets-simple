@@ -3,7 +3,7 @@ Compute = Google.compute 'v1'
 util = require 'util'
 fs = require 'fs'
 
-Range = require './range'
+Range = require './Range'
 
 Log = (items...) ->
   items = (
