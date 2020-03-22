@@ -65,122 +65,247 @@ class Request
 
   constructor: (@sheet) ->
 
-  updateSpreadsheetProperties: (@properties, @fields = '*') ->
+  @baseclass: class
+    constructor: (@properties..., @fields = '*') ->
 
-  updateSheetProperties: 
 
-  updateDimensionProperties:
+  @updateSpreadsheetProperties: class extends @baseclass
+    constructor: (@properties, @fields = '*') ->
+      super arguments...
 
-  updateNamedRange:
+  updateSheetProperties: class extends @baseclass
+    constructor: (sheetName, properties) ->
+      super arguments...
 
-  repeatCell:
+  updateDimensionProperties: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addNamedRange:
+  updateNamedRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteNamedRange:
+  repeatCell: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addSheet:
+  addNamedRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteSheet:
+  deleteNamedRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  autoFill:
+  addSheet: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  cutPaste:
+  deleteSheet: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  copyPaste:
+  autoFill: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  mergeCells:
+  cutPaste: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  unmergeCells:
+  copyPaste: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateBorders:
+  mergeCells: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateCells:
+  unmergeCells: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addFilterView:
+  updateBorders: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  appendCells:
+  updateCells: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  clearBasicFilter:
+  addFilterView: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteDimension:
+  appendCells: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteEmbeddedObject:
+  clearBasicFilter: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteFilterView:
+  deleteDimension: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  duplicateFilterView:
+  deleteEmbeddedObject: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  duplicateSheet:
+  deleteFilterView: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  findReplace:
+  duplicateFilterView: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  insertDimension:
+  duplicateSheet: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  insertRange:
+  findReplace: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  moveDimension:
+  insertDimension: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateEmbeddedObjectPosition:
+  insertRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  pasteData:
+  moveDimension: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  textToColumns:
+  updateEmbeddedObjectPosition: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateFilterView:
+  pasteData: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteRange:
+  textToColumns: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  appendDimension:
+  updateFilterView: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addConditionalFormatRule:
+  deleteRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateConditionalFormatRule:
+  appendDimension: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteConditionalFormatRule:
+  addConditionalFormatRule: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  sortRange:
+  updateConditionalFormatRule: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  setDataValidation:
+  deleteConditionalFormatRule: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  setBasicFilter:
+  sortRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addProtectedRange:
+  setDataValidation: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateProtectedRange:
+  setBasicFilter: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteProtectedRange:
+  addProtectedRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  autoResizeDimensions:
+  updateProtectedRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addChart:
+  deleteProtectedRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateChartSpec:
+  autoResizeDimensions: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateBanding:
+  addChart: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addBanding:
+  updateChartSpec: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteBanding:
+  updateBanding: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  createDeveloperMetadata:
+  addBanding: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateDeveloperMetadata:
+  deleteBanding: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteDeveloperMetadata:
+  createDeveloperMetadata: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  randomizeRange:
+  updateDeveloperMetadata: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addDimensionGroup:
+  deleteDeveloperMetadata: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteDimensionGroup:
+  randomizeRange: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateDimensionGroup:
+  addDimensionGroup: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  trimWhitespace:
+  deleteDimensionGroup: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  deleteDuplicates:
+  updateDimensionGroup: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  addSlicer:
+  trimWhitespace: class extends @baseclass
+    constructor: () ->
+      super arguments...
 
-  updateSlicerSpec:
+  deleteDuplicates: class extends @baseclass
+    constructor: () ->
+      super arguments...
+
+  addSlicer: class extends @baseclass
+    constructor: () ->
+      super arguments...
+
+  updateSlicerSpec: class extends @baseclass
+    constructor: () ->
+      super arguments...
+  ###
