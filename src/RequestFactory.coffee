@@ -1,254 +1,278 @@
-REQUESTS = [
-  "updateSpreadsheetProperties"
-  "updateSheetProperties"
-  "updateDimensionProperties"
-  "updateNamedRange"
-  "repeatCell"
-  "addNamedRange"
-  "deleteNamedRange"
-  "addSheet"
-  "deleteSheet"
-  "autoFill"
-  "cutPaste"
-  "copyPaste"
-  "mergeCells"
-  "unmergeCells"
-  "updateBorders"
-  "updateCells"
-  "addFilterView"
-  "appendCells"
-  "clearBasicFilter"
-  "deleteDimension"
-  "deleteEmbeddedObject"
-  "deleteFilterView"
-  "duplicateFilterView"
-  "duplicateSheet"
-  "findReplace"
-  "insertDimension"
-  "insertRange"
-  "moveDimension"
-  "updateEmbeddedObjectPosition"
-  "pasteData"
-  "textToColumns"
-  "updateFilterView"
-  "deleteRange"
-  "appendDimension"
-  "addConditionalFormatRule"
-  "updateConditionalFormatRule"
-  "deleteConditionalFormatRule"
-  "sortRange"
-  "setDataValidation"
-  "setBasicFilter"
-  "addProtectedRange"
-  "updateProtectedRange"
-  "deleteProtectedRange"
-  "autoResizeDimensions"
-  "addChart"
-  "updateChartSpec"
-  "updateBanding"
-  "addBanding"
-  "deleteBanding"
-  "createDeveloperMetadata"
-  "updateDeveloperMetadata"
-  "deleteDeveloperMetadata"
-  "randomizeRange"
-  "addDimensionGroup"
-  "deleteDimensionGroup"
-  "updateDimensionGroup"
-  "trimWhitespace"
-  "deleteDuplicates"
-  "addSlicer"
-  "updateSlicerSpec"
-]
+Request = require './Request'
 
-class Request
+class RequestFactory
 
-  constructor: (@tabs, @ranges) ->
+  constructor: (@sheet, @tabs, @ranges) ->
 
-  baseClass: class
-    constructor: (@name, @properties, @fields = '*') ->
+  updateSpreadsheetProperties: (properties, fields = '*') ->
+    new Request 'updateSpreadsheetProperties', properties, fields
 
-  updateSpreadsheetProperties: (properties, fields) ->
-    new @baseClass 'updateSpreadsheetProperties', properties, fields
-
-  updateSheetProperties: (sheetName, properties, fields) ->
+  updateSheetProperties: (sheetName, properties, fields = '*') ->
       properties.sheetId = if @tabs.has sheetName
         @tabs.get sheetName
       else sheetName # in case it's the ID
-      new @baseClass 'updateSheetProperties', properties, fields
+      new Request 'updateSheetProperties', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateDimensionProperties', properties, fields
+  updateDimensionProperties: (properties, fields = '*') ->
+    throw new Error "Not written yet"
+    new Request 'updateDimensionProperties', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateNamedRange', properties, fields
+  updateNamedRange: (name, newRange, fields = '*') ->
+    range = @ranges.get name
+    throw new Error "Named range #{name} not found" unless range?
+    gRange = @sheet.getRange newRange
+    properties =
+      namedRangeId: range.id
+      name: name        # can't currently change the name
+      range: gRange.gridRange
+    new Request 'updateNamedRange', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'repeatCell', properties, fields
+  repeatCell: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'repeatCell', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'addNamedRange', properties, fields
+  addNamedRange: (name, newRange, fields) ->
+    gRange = @sheet.getRange newRange
+    properties =
+      name: name        # can't currently set the id
+      range: gRange.gridRange
+    new Request 'addNamedRange', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteNamedRange', properties, fields
+  deleteNamedRange: (name) ->
+    range = @ranges.get name
+    throw new Error "Named range #{name} not found" unless range?
+    new Request 'deleteNamedRange', namedRangeId: range.id, null
 
-  (properties, fields) ->
-    new @baseClass 'addSheet', properties, fields
+  addSheet: (properties) ->
+    new Request 'addSheet', properties, null
 
-  (properties, fields) ->
-    new @baseClass 'deleteSheet', properties, fields
+  deleteSheet: (sheetName, fields) ->
+    sheetId = k for [k, v] from @tabs when v is sheetName
+    throw new Error "Sheet name #{name} not found" unless sheetId?
+    new Request 'deleteSheet', sheetId: sheetId, null
 
-  (properties, fields) ->
-    new @baseClass 'autoFill', properties, fields
+  autoFill: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'autoFill', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'cutPaste', properties, fields
+  cutPaste: (range, coordinate, pasteType = 'PASTE_NORMAL') ->
+    range = @sheet.get range
+    unless coordinate.indexOf '!' > 0
+      coordinate = "#{range.sheet}!#{coordinate}"
+    coordinate = sheet.getCoordinate
+    new Request 'cutPaste',
+      source: range.gridRange
+      destination: coordinate.gridCoordinate
+      pasteType: pasteType
 
-  (properties, fields) ->
-    new @baseClass 'copyPaste', properties, fields
+  copyPaste: (range, coordinate, pasteType = 'PASTE_NORMAL', orientation = 'NORMAL') ->
+    range = @sheet.get range
+    unless coordinate.indexOf '!' > 0
+      coordinate = "#{range.sheet}!#{coordinate}"
+    coordinate = sheet.getCoordinate
+    new Request 'copyPaste',
+      source: range.gridRange
+      destination: coordinate.gridCoordinate
+      pasteType: pasteType
+      orientation: orientation
 
-  (properties, fields) ->
-    new @baseClass 'mergeCells', properties, fields
+  mergeCells: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'mergeCells', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'unmergeCells', properties, fields
+  unmergeCells: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'unmergeCells', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateBorders', properties, fields
+  updateBorders: (range, properties) ->
+    range = @sheet.getRange range
+    properties.range = range.gridRange
+    new Request 'updateBorders', properties
 
-  (properties, fields) ->
-    new @baseClass 'updateCells', properties, fields
+  updateCells: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateCells', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'addFilterView', properties, fields
+  addFilterView: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'addFilterView', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'appendCells', properties, fields
+  appendCells: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'appendCells', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'clearBasicFilter', properties, fields
+  clearBasicFilter: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'clearBasicFilter', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteDimension', properties, fields
+  deleteDimension: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteDimension', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteEmbeddedObject', properties, fields
+  deleteEmbeddedObject: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteEmbeddedObject', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteFilterView', properties, fields
+  deleteFilterView: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteFilterView', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'duplicateFilterView', properties, fields
+  duplicateFilterView: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'duplicateFilterView', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'duplicateSheet', properties, fields
+  duplicateSheet: (source, newName, index) ->
+    sourceSheetId = k for [k, v] from @tabs when v is source
+    properties =
+      sourceSheetId: sourceSheetId
+      newSheetName: newName
+    properties.insertSheetIndex = index if index?
+    new Request 'duplicateSheet', properties
 
-  (properties, fields) ->
-    new @baseClass 'findReplace', properties, fields
+  findReplace: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'findReplace', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'insertDimension', properties, fields
+  insertDimension: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'insertDimension', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'insertRange', properties, fields
+  insertRange: (range, direction = 'ROWS') ->
+    range = @sheet.getRange range
+    new Request 'insertRange',
+      range: range.gridRange
+      shiftDimension: direction
 
-  (properties, fields) ->
-    new @baseClass 'moveDimension', properties, fields
+  moveDimension: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'moveDimension', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateEmbeddedObjectPosition', properties, fields
+  updateEmbeddedObjectPosition: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateEmbeddedObjectPosition', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'pasteData', properties, fields
+  pasteData: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'pasteData', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'textToColumns', properties, fields
+  textToColumns: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'textToColumns', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateFilterView', properties, fields
+  updateFilterView: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateFilterView', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteRange', properties, fields
+  deleteRange: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteRange', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'appendDimension', properties, fields
+  appendDimension: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'appendDimension', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'addConditionalFormatRule', properties, fields
+  addConditionalFormatRule: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'addConditionalFormatRule', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateConditionalFormatRule', properties, fields
+  updateConditionalFormatRule: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateConditionalFormatRule', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteConditionalFormatRule', properties, fields
+  deleteConditionalFormatRule: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteConditionalFormatRule', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'sortRange', properties, fields
+  sortRange: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'sortRange', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'setDataValidation', properties, fields
+  setDataValidation: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'setDataValidation', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'setBasicFilter', properties, fields
+  setBasicFilter: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'setBasicFilter', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'addProtectedRange', properties, fields
+  addProtectedRange: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'addProtectedRange', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateProtectedRange', properties, fields
+  updateProtectedRange: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateProtectedRange', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteProtectedRange', properties, fields
+  deleteProtectedRange: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteProtectedRange', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'autoResizeDimensions', properties, fields
+  autoResizeDimensions: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'autoResizeDimensions', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'addChart', properties, fields
+  addChart: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'addChart', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateChartSpec', properties, fields
+  updateChartSpec: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateChartSpec', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateBanding', properties, fields
+  updateBanding: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateBanding', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'addBanding', properties, fields
+  addBanding: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'addBanding', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteBanding', properties, fields
+  deleteBanding: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteBanding', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'createDeveloperMetadata', properties, fields
+  createDeveloperMetadata: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'createDeveloperMetadata', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateDeveloperMetadata', properties, fields
+  updateDeveloperMetadata: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateDeveloperMetadata', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteDeveloperMetadata', properties, fields
+  deleteDeveloperMetadata: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteDeveloperMetadata', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'randomizeRange', properties, fields
+  randomizeRange: (range) ->
+    range = @sheet.getRange range
+    new Request 'randomizeRange', range: range.gridRange
 
-  (properties, fields) ->
-    new @baseClass 'addDimensionGroup', properties, fields
+  addDimensionGroup: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'addDimensionGroup', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'deleteDimensionGroup', properties, fields
+  deleteDimensionGroup: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteDimensionGroup', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateDimensionGroup', properties, fields
+  updateDimensionGroup: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateDimensionGroup', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'trimWhitespace', properties, fields
+  trimWhitespace: (range) ->
+    range = @sheet.getRange range
+    new Request 'trimWhitespace', range: range.gridRange
 
-  (properties, fields) ->
-    new @baseClass 'deleteDuplicates', properties, fields
+  deleteDuplicates: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'deleteDuplicates', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'addSlicer', properties, fields
+  addSlicer: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'addSlicer', properties, fields
 
-  (properties, fields) ->
-    new @baseClass 'updateSlicerSpec', properties, fields
+  updateSlicerSpec: (properties, fields) ->
+    throw new Error "Not written yet"
+    new Request 'updateSlicerSpec', properties, fields
 
-module.exports = Request
+module.exports = RequestFactory

@@ -5,7 +5,8 @@ fs = require 'fs'
 
 Property = require './Property'
 Range = require './Range'
-Request = require './Request'
+Coordinate = require './Coordinate'
+RequestFactory = require './RequestFactory'
 
 Log = (items...) ->
   items = (
@@ -31,9 +32,12 @@ class Sheet extends Property
     else
       new Range range, @tabs
 
+  getCoordinate: (loc) ->
+    new Coordinate loc, @tabs
+
   @property 'Request',
     get: ->
-      new Request @tabs, @ranges
+      new RequestFactory @, @tabs, @ranges
 
   initialize: ->
     initialise()
@@ -56,7 +60,11 @@ class Sheet extends Property
     .then (result) =>
       spreadsheet = result.data
       @tabs.set sheet.properties.sheetId, sheet.properties.title for sheet in spreadsheet.sheets
-      @ranges.set range.name, @getRange range.range for range in spreadsheet.namedRanges
+      console.log spreadsheet.namedRanges
+      for range in spreadsheet.namedRanges
+        current = @getRange range.range
+        current.id = range.namedRangeId
+        @ranges.set range.name, current
       spreadsheet
 
   save: (where, what, how = 'ROWS') ->      # or 'COLUMNS'
