@@ -3,7 +3,9 @@ Compute = Google.compute 'v1'
 util = require 'util'
 fs = require 'fs'
 
+Property = require './Property'
 Range = require './Range'
+Request = require './Request'
 
 Log = (items...) ->
   items = (
@@ -14,9 +16,10 @@ Log = (items...) ->
   )
   console.log items...      # noqa
 
-class Sheet
+class Sheet extends Property
 
   constructor: (@id) ->
+    super()
     @sheets = Google.sheets 'v4'
 
   ranges: new Map
@@ -27,6 +30,10 @@ class Sheet
       @ranges.get range
     else
       new Range range, @tabs
+
+  @property 'Request',
+    get: ->
+      new Request @tabs, @ranges
 
   initialize: ->
     initialise()

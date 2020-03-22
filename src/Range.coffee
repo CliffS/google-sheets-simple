@@ -7,32 +7,33 @@ class Range extends Property
   constructor: (range, tabs) ->
     super()
     switch typeof range
-      matches = range.match /^([^!]+)!([A-Z]+)(\d+):([A-Z]+)(\d+)$/
-      unless matches?
-        named = ranges.get range
-        throw new Error "Invalid range: #{range}" unless named?
-      [sheet, startCol, startRow, endCol, endRow] = matches[1..]
-      @gridRange =
-        startRowIndex:      parseInt startRow - 1
-        endRowIndex:        parseInt endRow
-        startColumnIndex:   Range.letters2column startCol
-        endColumnIndex:     Range.letters2column(endCol) + 1
-      id = k for [k, v] from tabs when v is sheet
-      @gridRange.sheetId = id if id?
-      @sheet = sheet
-    when 'object'
-      if range instanceof Range   # should only happen internally
-        args = [arguments...]
-        [startRow, startColumn, columns] = args[1..]
-        # clone the object
-        @[k] = v for own k, v of range when k isnt 'gridRange'
-        @gridRange = Object.assign {}, range.gridRange
-        @gridRange.startRowIndex = startRow if startRow?
-        @gridRange.startColumnIndex = startColumn if startColumn?
-        @gridRange.endColumnIndex = startColumn + columns if columns
-      else # it's just a gridRange
-        @gridRange = range
-        @sheet = tabs.get range.sheetId ? 0
+      when 'string'
+        matches = range.match /^([^!]+)!([A-Z]+)(\d+):([A-Z]+)(\d+)$/
+        unless matches?
+          named = ranges.get range
+          throw new Error "Invalid range: #{range}" unless named?
+        [sheet, startCol, startRow, endCol, endRow] = matches[1..]
+        @gridRange =
+          startRowIndex:      parseInt startRow - 1
+          endRowIndex:        parseInt endRow
+          startColumnIndex:   Range.letters2column startCol
+          endColumnIndex:     Range.letters2column(endCol) + 1
+        id = k for [k, v] from tabs when v is sheet
+        @gridRange.sheetId = id if id?
+        @sheet = sheet
+      when 'object'
+        if range instanceof Range   # should only happen internally
+          args = [arguments...]
+          [startRow, startColumn, columns] = args[1..]
+          # clone the object
+          @[k] = v for own k, v of range when k isnt 'gridRange'
+          @gridRange = Object.assign {}, range.gridRange
+          @gridRange.startRowIndex = startRow if startRow?
+          @gridRange.startColumnIndex = startColumn if startColumn?
+          @gridRange.endColumnIndex = startColumn + columns if columns
+        else # it's just a gridRange
+          @gridRange = range
+          @sheet = tabs.get range.sheetId ? 0
     @columns = @gridRange.endColumnIndex - @gridRange.startColumnIndex
     @rows    = @gridRange.endRowIndex    - @gridRange.startRowIndex
     throw new Error "Invalid range: #{range}" if @columns < 1 or @rows < 1

@@ -63,249 +63,192 @@ REQUESTS = [
 
 class Request
 
-  constructor: (@sheet) ->
+  constructor: (@tabs, @ranges) ->
 
-  @baseclass: class
-    constructor: (@properties..., @fields = '*') ->
+  baseClass: class
+    constructor: (@name, @properties, @fields = '*') ->
 
+  updateSpreadsheetProperties: (properties, fields) ->
+    new @baseClass 'updateSpreadsheetProperties', properties, fields
 
-  @updateSpreadsheetProperties: class extends @baseclass
-    constructor: (@properties, @fields = '*') ->
-      super arguments...
+  updateSheetProperties: (sheetName, properties, fields) ->
+      properties.sheetId = if @tabs.has sheetName
+        @tabs.get sheetName
+      else sheetName # in case it's the ID
+      new @baseClass 'updateSheetProperties', properties, fields
 
-  updateSheetProperties: class extends @baseclass
-    constructor: (sheetName, properties) ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateDimensionProperties', properties, fields
 
-  updateDimensionProperties: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateNamedRange', properties, fields
 
-  updateNamedRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'repeatCell', properties, fields
 
-  repeatCell: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addNamedRange', properties, fields
 
-  addNamedRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteNamedRange', properties, fields
 
-  deleteNamedRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addSheet', properties, fields
 
-  addSheet: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteSheet', properties, fields
 
-  deleteSheet: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'autoFill', properties, fields
 
-  autoFill: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'cutPaste', properties, fields
 
-  cutPaste: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'copyPaste', properties, fields
 
-  copyPaste: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'mergeCells', properties, fields
 
-  mergeCells: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'unmergeCells', properties, fields
 
-  unmergeCells: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateBorders', properties, fields
 
-  updateBorders: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateCells', properties, fields
 
-  updateCells: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addFilterView', properties, fields
 
-  addFilterView: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'appendCells', properties, fields
 
-  appendCells: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'clearBasicFilter', properties, fields
 
-  clearBasicFilter: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteDimension', properties, fields
 
-  deleteDimension: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteEmbeddedObject', properties, fields
 
-  deleteEmbeddedObject: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteFilterView', properties, fields
 
-  deleteFilterView: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'duplicateFilterView', properties, fields
 
-  duplicateFilterView: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'duplicateSheet', properties, fields
 
-  duplicateSheet: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'findReplace', properties, fields
 
-  findReplace: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'insertDimension', properties, fields
 
-  insertDimension: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'insertRange', properties, fields
 
-  insertRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'moveDimension', properties, fields
 
-  moveDimension: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateEmbeddedObjectPosition', properties, fields
 
-  updateEmbeddedObjectPosition: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'pasteData', properties, fields
 
-  pasteData: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'textToColumns', properties, fields
 
-  textToColumns: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateFilterView', properties, fields
 
-  updateFilterView: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteRange', properties, fields
 
-  deleteRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'appendDimension', properties, fields
 
-  appendDimension: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addConditionalFormatRule', properties, fields
 
-  addConditionalFormatRule: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateConditionalFormatRule', properties, fields
 
-  updateConditionalFormatRule: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteConditionalFormatRule', properties, fields
 
-  deleteConditionalFormatRule: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'sortRange', properties, fields
 
-  sortRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'setDataValidation', properties, fields
 
-  setDataValidation: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'setBasicFilter', properties, fields
 
-  setBasicFilter: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addProtectedRange', properties, fields
 
-  addProtectedRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateProtectedRange', properties, fields
 
-  updateProtectedRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteProtectedRange', properties, fields
 
-  deleteProtectedRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'autoResizeDimensions', properties, fields
 
-  autoResizeDimensions: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addChart', properties, fields
 
-  addChart: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateChartSpec', properties, fields
 
-  updateChartSpec: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateBanding', properties, fields
 
-  updateBanding: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addBanding', properties, fields
 
-  addBanding: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteBanding', properties, fields
 
-  deleteBanding: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'createDeveloperMetadata', properties, fields
 
-  createDeveloperMetadata: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateDeveloperMetadata', properties, fields
 
-  updateDeveloperMetadata: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteDeveloperMetadata', properties, fields
 
-  deleteDeveloperMetadata: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'randomizeRange', properties, fields
 
-  randomizeRange: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addDimensionGroup', properties, fields
 
-  addDimensionGroup: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteDimensionGroup', properties, fields
 
-  deleteDimensionGroup: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateDimensionGroup', properties, fields
 
-  updateDimensionGroup: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'trimWhitespace', properties, fields
 
-  trimWhitespace: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'deleteDuplicates', properties, fields
 
-  deleteDuplicates: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'addSlicer', properties, fields
 
-  addSlicer: class extends @baseclass
-    constructor: () ->
-      super arguments...
+  (properties, fields) ->
+    new @baseClass 'updateSlicerSpec', properties, fields
 
-  updateSlicerSpec: class extends @baseclass
-    constructor: () ->
-      super arguments...
-  ###
+module.exports = Request
