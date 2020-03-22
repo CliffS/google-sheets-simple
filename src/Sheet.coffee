@@ -117,7 +117,6 @@ class Sheet extends Property
       if response.data.error then throw response.data.error
       response.data
 
-
   append: (where, what, how = 'ROWS') ->
     unless how in ['ROWS', 'COLUMNS']
       throw new Error "'ROWS' or 'COLUMNS' are the only possible values"
@@ -135,7 +134,25 @@ class Sheet extends Property
       if response.data.error then throw response.data.error
       response.data
 
-
+  batchUpdate: (requests) ->
+    @sheets.spreadsheets.batchUpdate
+      auth: @auth
+      spreadsheetId: @id
+      resource:
+        requests: requests
+        includeSpreadsheetInResponse: true
+        responseRanges: []
+        responseIncludeGridData: false
+    .then (result) =>
+      spreadsheet = result.updatedSpreadsheet
+      @tabs.clear()
+      @tabs.set sheet.properties.sheetId, sheet.properties.title for sheet in spreadsheet.sheets
+      @ranges.clear()
+      for range in spreadsheet.namedRanges
+        current = @getRange range.range
+        current.id = range.namedRangeId
+        @ranges.set range.name, current
+      result.replies
 
 
 module.exports = Sheet
