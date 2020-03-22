@@ -23,7 +23,10 @@ class Sheet
   tabs:   new Map
 
   getRange: (range) ->
-    new Range range, @tabs, @ranges
+    if @ranges.has range
+      @ranges.get range
+    else
+      new Range range, @tabs
 
   initialize: ->
     initialise()
