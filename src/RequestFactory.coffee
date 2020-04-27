@@ -2,16 +2,16 @@ Request = require './Request'
 
 class RequestFactory
 
-  constructor: (@sheet, @tabs, @ranges) ->
+  constructor: (@sheet, @tabs, @ranges) ->          # noqa
 
   updateSpreadsheetProperties: (properties, fields = '*') ->
     new Request 'updateSpreadsheetProperties', properties, fields
 
   updateSheetProperties: (sheetName, properties, fields = '*') ->
-      properties.sheetId = if @tabs.has sheetName
-        @tabs.get sheetName
-      else sheetName # in case it's the ID
-      new Request 'updateSheetProperties', properties, fields
+    properties.sheetId = if @tabs.has sheetName
+      @tabs.get sheetName
+    else sheetName # in case it's the ID
+    new Request 'updateSheetProperties', properties, fields
 
   updateDimensionProperties: (properties, fields = '*') ->
     throw new Error "Not written yet"

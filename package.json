@@ -2,7 +2,7 @@
   "name": "google-sheets-simple",
   "version": "0.3.0",
   "description": "A simple way to access Google Sheets with named and unnamed ranges",
-  "main": "lib/index.js",
+  "main": "lib/Sheet.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run lint && coffee -c -o lib src",

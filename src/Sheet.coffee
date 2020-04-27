@@ -60,7 +60,7 @@ class Sheet extends Property
     .then (result) =>
       spreadsheet = result.data
       @tabs.set sheet.properties.sheetId, sheet.properties.title for sheet in spreadsheet.sheets
-      console.log spreadsheet.namedRanges
+      # console.log spreadsheet.namedRanges
       for range in spreadsheet.namedRanges
         current = @getRange range.range
         current.id = range.namedRangeId
@@ -85,7 +85,7 @@ class Sheet extends Property
     ,
       Promise.resolve()
       .then =>
-        if blank?
+        if blank? and blank.length
           @sheets.spreadsheets.values.batchClear
             auth: @auth
             spreadsheetId: @id

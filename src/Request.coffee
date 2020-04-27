@@ -63,6 +63,6 @@ REQUESTS = [
 
 class Request
 
-  constructor: (@name, @properties, @fields) ->
+  constructor: (@name, @properties, @fields) ->         # noqa
 
 module.exports = Request
