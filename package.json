@@ -1,6 +1,6 @@
 {
   "name": "google-sheets-simple",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A simple way to access Google Sheets with named and unnamed ranges",
   "main": "lib/Sheet.js",
   "scripts": {
