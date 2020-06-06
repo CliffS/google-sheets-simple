@@ -25,7 +25,7 @@ It is a simplified interface to the [Google APIs Node.js Client][googleapis]
 and currently only uses the [Service to Service Authentication][service]
 method.
 
-The full API can be found [here][API].  This library currently on supports
+The full API can be found [here][API].  This library currently only supports
 the basic essentials.
 
 ## Usage
