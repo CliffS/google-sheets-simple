@@ -3,8 +3,21 @@
 [range]: https://support.google.com/docs/answer/63175?co=GENIE.Platform%3DDesktop&hl=en
 [github]: https://github.com/CliffS/google-sheets-simple/issues
 [API]: https://developers.google.com/sheets/api/reference/rest
+[npm-image]:https://img.shields.io/npm/v/npm-get-version.svg
+[npm-url]:http://npmjs.org/package/npm-get-version
+[travis-image]:https://travis-ci.org/glicht/npm-get-version.svg?branch=master
+[travis-url]:https://travis-ci.org/glicht/npm-get-version
+[david-image]:https://david-dm.org/glicht/npm-get-version/status.svg
+[david-url]:https://david-dm.org/glicht/npm-get-version
+[coveralls-image]:https://coveralls.io/repos/github/glicht/npm-get-version/badge.svg?branch=master
+[coveralls-url]:https://coveralls.io/github/glicht/npm-get-version?branch=master
 
 # google-sheets-simple
+
+[![npm package][npm-image]][npm-url] 
+[![Build Status][travis-image]][travis-url] 
+[![Coverage Status][coveralls-image]][coveralls-url] 
+[![Dependencies Status][david-image]][david-url]
 
 A simple way to access Google Sheets with named and unnamed ranges
 
@@ -18,10 +31,8 @@ const { Sheet, Range } = require('google-sheets-simple');
 
 ## Please note
 
-This is an early version, an `alpha` version really.  It should not
-be used in earnest yet.  The syntax may change before version v1.0.0.
-
-It is a simplified interface to the [Google APIs Node.js Client][googleapis]
+This library is a simplified interface
+to the [Google APIs Node.js Client][googleapis]
 and currently only uses the [Service to Service Authentication][service]
 method.
 
