@@ -3,14 +3,14 @@
 [range]: https://support.google.com/docs/answer/63175?co=GENIE.Platform%3DDesktop&hl=en
 [github]: https://github.com/CliffS/google-sheets-simple/issues
 [API]: https://developers.google.com/sheets/api/reference/rest
-[npm-image]:https://img.shields.io/npm/v/npm-get-version.svg
-[npm-url]:http://npmjs.org/package/npm-get-version
-[travis-image]:https://travis-ci.org/glicht/npm-get-version.svg?branch=master
-[travis-url]:https://travis-ci.org/glicht/npm-get-version
-[david-image]:https://david-dm.org/glicht/npm-get-version/status.svg
-[david-url]:https://david-dm.org/glicht/npm-get-version
-[coveralls-image]:https://coveralls.io/repos/github/glicht/npm-get-version/badge.svg?branch=master
-[coveralls-url]:https://coveralls.io/github/glicht/npm-get-version?branch=master
+[npm-image]:https://img.shields.io/npm/v/google-sheets-simple.svg
+[npm-url]:http://npmjs.org/package/google-sheets-simple
+[travis-image]:https://travis-ci.org/glicht/google-sheets-simple.svg?branch=master
+[travis-url]:https://travis-ci.org/glicht/google-sheets-simple
+[david-image]:https://david-dm.org/glicht/google-sheets-simple/status.svg
+[david-url]:https://david-dm.org/glicht/google-sheets-simple
+[coveralls-image]:https://coveralls.io/repos/github/glicht/google-sheets-simple/badge.svg?branch=master
+[coveralls-url]:https://coveralls.io/github/glicht/google-sheets-simple?branch=master
 
 # google-sheets-simple
 
