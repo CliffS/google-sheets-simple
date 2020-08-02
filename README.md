@@ -17,7 +17,9 @@
 [![npm package][npm-image]][npm-url] 
 [![Build Status][travis-image]][travis-url] 
 [![Coverage Status][coveralls-image]][coveralls-url] 
+<!--
 [![Dependencies Status][david-image]][david-url]
+-->
 
 A simple way to access Google Sheets with named and unnamed ranges
 
