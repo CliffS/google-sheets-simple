@@ -25,6 +25,8 @@ A simple way to access Google Sheets with named and unnamed ranges
 
 Version v0.3.0 onwards use a different syntax for the `require`:
 
+Version v1.0.0 is first release version.
+
 ```javascript
 const { Sheet, Range } = require('google-sheets-simple');
 ```
