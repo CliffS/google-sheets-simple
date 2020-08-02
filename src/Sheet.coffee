@@ -61,10 +61,11 @@ class Sheet extends Property
       spreadsheet = result.data
       @tabs.set sheet.properties.sheetId, sheet.properties.title for sheet in spreadsheet.sheets
       # console.log spreadsheet.namedRanges
-      for range in spreadsheet.namedRanges
-        current = @getRange range.range
-        current.id = range.namedRangeId
-        @ranges.set range.name, current
+      if spreadsheet.namedRanges?
+        for range in spreadsheet.namedRanges
+          current = @getRange range.range
+          current.id = range.namedRangeId
+          @ranges.set range.name, current
       spreadsheet
 
   save: (where, what, how = 'ROWS') ->      # or 'COLUMNS'
