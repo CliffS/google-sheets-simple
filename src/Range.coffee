@@ -36,7 +36,7 @@ class Range extends Property
           @sheet = tabs.get range.sheetId ? 0
     @columns = @gridRange.endColumnIndex - @gridRange.startColumnIndex
     @rows    = @gridRange.endRowIndex    - @gridRange.startRowIndex
-    throw new Error "Invalid range: #{JSON.stringify range, null, 2}" if @columns < 1 or @rows < 1
+    throw new Error "Invalid range: #{JSON.stringify @, null, 2}" if @columns < 1 or @rows < 1
 
   @property 'range',
     enumerable: true
@@ -67,7 +67,11 @@ class Range extends Property
             new Range @, len, @gridRange.startColumnIndex + col, 1
         )
       when 'ROWS'
-        [ new Range @, @gridRange.startRowIndex + data.length ]
+        newStart = @gridRange.startRowIndex + data.length
+        if newStart is @gridRange.endRowIndex
+          []
+        else
+          [ new Range @, @gridRange.startRowIndex + data.length ]
       else
         throw new Error "Must pass either 'COLUMNS' or 'ROWS'"
 
